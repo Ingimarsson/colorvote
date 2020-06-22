@@ -1,10 +1,9 @@
 import sqlite3
 
-class Database:
-  def __init__(self):
-    return
+class Database(object):
+  def __init__(self, db = 'database.db'):
+    self.conn = sqlite3.connect(db)
 
-  def create_db(self):
     return
 
   def insert_block(block):

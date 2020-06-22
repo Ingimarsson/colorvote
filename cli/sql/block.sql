@@ -1,0 +1,5 @@
+CREATE TABLE block (
+  id INT PRIMARY KEY,
+  timestamp DATETIME NOT NULL,
+  size INT NOT NULL
+);

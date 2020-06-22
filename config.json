@@ -1,5 +1,8 @@
 {
-    "rpcuser": "smileycoin", 
-    "rpcpass": "smileycoin", 
-    "rpcport": 1187
+  "rpc": {
+    "username": "smileycoinrpc", 
+    "password": "2nhUgEm7up4Usici957BqNPZWoXfeJfBtJUZwH1UXBTc", 
+    "port": 14242
+  }, 
+  "database": "database.db"
 }
