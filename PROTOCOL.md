@@ -29,16 +29,24 @@ The transaction can have any number of outputs but they should all be P2PKH. The
 
 A transfer transaction is used to transfer votes between addresses. A transfer transaction can have multiple inputs and outputs transferring multiple colors in a single transaction. As only the inputs can be traced to an issuance transaction to determine the color, we will use a scheme known as order-based coloring to determine the colors of the outputs from the inputs.
 
-
-
 To account for the transaction fee, an additional input from an uncolored UTXO will need to be supplied.
 
 ### Commitment scheme
 
-With most colored coins protocols, the balance of any address can be calculated at any time. This might be undesired for voting purposes, as the votes should only be countable after everyone has voted. To address this we introduce a cryptographic commitment scheme. Votes are then cast with two transactions. The first one is a commitment transaction that contains a commitment to a chosen recipient while keeping it hidden from others. The second one is a reveal transaction that contains a key to make the commitment visible to everyone. This way all votes are final once everyone has sent commitment transactions, but the votes can only be counted after everyone has sent reveal transactions.
+With most colored coins protocols, the balance of any address can be calculated at any time. This might be undesired for voting purposes, as the votes should only be countable after everyone has voted. To address this we introduce a cryptographic commitment scheme. Using this scheme, votes are cast in two steps with one transaction for each step.
 
-The manager of an election should specify a deadline for sending commitments, and a deadline for sending reveals. This way commitments are only valid if sent before the first deadline, and reveals are only valid if send between the two deadlines.
+The first one is a commitment transaction that contains a commitment to a chosen recipient while keeping it hidden from others. The second one is a reveal transaction that contains a key to make the commitment visible to everyone. This way all votes are final once everyone has sent commitment transactions, but the votes can only be counted after everyone has sent reveal transactions.
+
+The manager of an election should specify a deadline for sending commitments, and a deadline for sending reveals. This way commitments are only valid if sent before the first deadline, and reveals are only valid if sent between the two deadlines.
 
 #### Commitment transaction
 
+A commitment transaction is a transfer transaction where a colored coin is not transferred to a candidate but to an address that will later send the final vote. In most cases it will probably be sent back to the same owner (can be same address) which will later send a reveal transaction.
+
+To add a commitment to a transfer transaction, we add an `OP_RETURN` output after the output that should contain the commitment. To create a commitment to an address X (with a public key P), we generate a random 256 bit number M and then calculate SHA256(P||M) where || means bitwise or.
+
 #### Reveal transaction
+
+A reveal transaction is a transfer transaction where a colored voting coin from an UTXO with a commitment is sent to its final destination (the address of a candidate). To make a valid reveal transaction we add an `OP_RETURN` after the output that goes to the candidate. It should contain the random number M that was generated for the commitment.
+
+When counting votes we only consider UTXO's where the commitment matches the reveal.
