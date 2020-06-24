@@ -15,13 +15,17 @@ def run():
 
   parser.add_argument('--database', help='path to SQLite database')
   parser.add_argument('--config', help='path to JSON config file')
-  parser.add_argument('--nosend', action='store_true', help='don\'t execute commands in wallet')
-  parser.add_argument('--print', action='store_true', help='print the JSON RPC wallet commands')
+  parser.add_argument('--nosend', action='store_true', 
+    help='don\'t execute commands in wallet')
+  parser.add_argument('--print', action='store_true', 
+    help='print the JSON RPC wallet commands')
 
   parser_create = subparser.add_parser('create', help='create a new election')
   parser_create.add_argument('address', help='issuing transaction')
-  parser_create.add_argument('meta', help='string to include in genesis transaction')
-  parser_create.add_argument('--unit', type=float, help='value of a single vote (default 1 BTC)', default=1)
+  parser_create.add_argument('meta', 
+    help='string to include in genesis transaction')
+  parser_create.add_argument('--unit', type=float, 
+    help='value of a single vote (default 1 BTC)', default=1)
 
   parser_issue = subparser.add_parser('issue', help='issue new votes')
   parser_issue.add_argument('election', help='address of election')
@@ -32,20 +36,28 @@ def run():
   parser_send.add_argument('election', help='address of election')
   parser_send.add_argument('candidate', help='address of candidate')
 
-  parser_balance = subparser.add_parser('balance', help='get unspent voting coins in wallet (or by address)')
+  parser_balance = subparser.add_parser('balance', 
+    help='get unspent voting coins in wallet (or by address)')
   parser_balance.add_argument('--address', help='address to show balance for')
 
-  parser_list = subparser.add_parser('list', help='list all elections on blockchain')
-  parser_list.add_argument('--count', type=int, help='number of results to return')
+  parser_list = subparser.add_parser('list', 
+    help='list all elections on blockchain')
+  parser_list.add_argument('--count', type=int, 
+    help='number of results to return')
 
-  parser_scan = subparser.add_parser('scan', help='scan blockchain for new votes')
-  parser_scan.add_argument('--full', action='store_true', help='truncate local database and rescan blockchain')
+  parser_scan = subparser.add_parser('scan', 
+    help='scan blockchain for new votes')
+  parser_scan.add_argument('--full', action='store_true', 
+    help='truncate local database and rescan blockchain')
 
-  parser_trace = subparser.add_parser('trace', help='trace a vote to issuing transaction')
+  parser_trace = subparser.add_parser('trace', 
+    help='trace a vote to issuing transaction')
 
-  parser_count = subparser.add_parser('count', help='count votes for an election')
+  parser_count = subparser.add_parser('count', 
+    help='count votes for an election')
   parser_count.add_argument('election', help='address of election')
-  parser_count.add_argument('--count', type=int, help='number of results to return')
+  parser_count.add_argument('--count', type=int, 
+    help='number of results to return')
 
   parsed = parser.parse_args()
 

@@ -18,16 +18,14 @@ class Colorvote(object):
     """
     Creates a new election with a metadata transaction.
 
-    To create an election we select a UTXO from the wallet
-    with the specified address. Then we create a transaction
-    with that only input, and two outputs. One to send the 
-    whole amount back to the same address, and one OP_RETURN
+    To create an election we select a UTXO from the wallet with the specified
+    address. Then we create a transaction with that only input, and two outputs.
+    One to send the whole amount back to the same address, and one OP_RETURN ok
     output with the election metadata.
 
     @param address the election address
     @param unit the currency value of a single vote
-    @param meta an ASCII string (max 80 char) to include in 
-    transaction
+    @param meta an ASCII string (max 80 char) to include in transaction
 
     @return transaction ID
     """
@@ -45,7 +43,8 @@ class Colorvote(object):
     k = int(unit/10**n)
 
     if k*10**n != unit:
-      raise Exception("Specified unit value cannot be encoded, see protocol specification")
+      raise Exception(
+        "Supplied unit value cannot be encoded, see documentation")
 
     vote_value = k+16*n % 256
 
@@ -57,7 +56,8 @@ class Colorvote(object):
       i += 1
 
     if i >= len(unspent):
-      raise Exception("Could not find an unspent transaction output for given address")
+      raise Exception(
+        "Could not find an unspent transaction output for given address")
 
     inputs = [
       {
@@ -91,10 +91,9 @@ class Colorvote(object):
     """
     Issues new voting coins for a given election.
 
-    To issue coins we need to own an address that has made an
-    identification transaction. The address is the color/ID
-    of the election. This command looks up the identifiaction
-    transaction to read the vote value (the amount of the 
+    To issue coins we need to own an address that has made an identification
+    transaction. The address is the color/ID of the election. This command look
+    up the identifiaction transaction to read the vote value (the amount of the
     currency that is equal to one vote).
 
     @param election address of election
@@ -107,7 +106,8 @@ class Colorvote(object):
     election_info = self.db.get_election(election)
 
     if not election_info:
-      raise Exception("There is no election with this address, try rescanning the blockchain")
+      raise Exception(
+        "There is no election with this address, try rescanning the blockchain")
 
     unit = election_info['unit']
 
@@ -160,7 +160,8 @@ class Colorvote(object):
             n = floor(unit/16)
 
             vout_n = transaction['vin'][0]['vout']
-            utxo = self.rpc.get_transaction(transaction['vin'][0]['txid'])['vout'][vout_n]
+            utxo = self.rpc.get_transaction(transaction['vin'][0]['txid'])
+            vout = utxo['vout'][vout_n]
 
             if len(transaction['vout']) < 2:
               raise Exception("invalid transaction")
@@ -172,7 +173,8 @@ class Colorvote(object):
 
             meta = bytearray.fromhex(vout_meta['hex'][4:]).decode()
 
-            print("Colored address %s with metadata %s" % (utxo['scriptPubKey']['addresses'][0], meta))
+            print("Colored address %s with metadata %s" % \
+              (utxo['scriptPubKey']['addresses'][0], meta))
 
           # Issuance transaction
           if sequence % 256 == 178:
