@@ -6,14 +6,17 @@ class Database(object):
 
     return
 
-  def insert_block(block):
-    return
+  def get_setting(self, key):
+    c = self.conn.cursor()
 
-  def insert_transaction(block):
-    return
+    c.execute("SELECT value FROM settings WHERE key='%s';" % key)
+    
+    return c.fetchone()[0]
 
-  def insert_election(block):
-    return
+  def set_setting(self, key, value):
+    c = self.conn.cursor()
 
-  def insert_vote(block):
+    c.execute("UPDATE settings SET value='%s' WHERE key='%s';" % (value, key))
+    self.conn.commit()
+
     return

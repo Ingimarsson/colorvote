@@ -13,7 +13,6 @@ class RPC(object):
     payload = {"method": cmd, "jsonrpc": "1.0", "params": params}
 
     response = self.session.post(self.url, headers=self.headers, data=json.dumps(payload))
-
     responseJSON = response.json()
 
     return responseJSON['result']
@@ -23,4 +22,9 @@ class RPC(object):
 
     return result
 
+  def get_transaction(self, txid):
+    raw = self.send_command("getrawtransaction", [txid])
+    tx = self.send_command("decoderawtransaction", [raw])
+
+    return tx
 

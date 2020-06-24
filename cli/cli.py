@@ -21,17 +21,21 @@ def run():
   parser_create = subparser.add_parser('create', help='create a new election')
   parser_create.add_argument('address', help='issuing transaction')
   parser_create.add_argument('meta', help='string to include in genesis transaction')
+  parser_create.add_argument('--unit', type=float, help='value of a single vote (default 1 BTC)', default=1)
 
   parser_issue = subparser.add_parser('issue', help='issue new votes')
   parser_issue.add_argument('election', help='address of election')
   parser_issue.add_argument('receiver', help='address to receive votes')
   parser_issue.add_argument('votes', type=int, help='number of votes to issue')
 
-  parser_vote = subparser.add_parser('vote', help='send a vote')
-  parser_vote.add_argument('election', help='address of election')
-  parser_vote.add_argument('candidate', help='address of candidate')
+  parser_send = subparser.add_parser('send', help='send a vote')
+  parser_send.add_argument('election', help='address of election')
+  parser_send.add_argument('candidate', help='address of candidate')
 
-  parser_list = subparser.add_parser('list', help='list elections')
+  parser_balance = subparser.add_parser('balance', help='get unspent voting coins in wallet (or by address)')
+  parser_balance.add_argument('--address', help='address to show balance for')
+
+  parser_list = subparser.add_parser('list', help='list all elections on blockchain')
   parser_list.add_argument('--count', type=int, help='number of results to return')
 
   parser_scan = subparser.add_parser('scan', help='scan blockchain for new votes')
@@ -39,7 +43,7 @@ def run():
 
   parser_trace = subparser.add_parser('trace', help='trace a vote to issuing transaction')
 
-  parser_count = subparser.add_parser('count', help='count votes in an election')
+  parser_count = subparser.add_parser('count', help='count votes for an election')
   parser_count.add_argument('election', help='address of election')
   parser_count.add_argument('--count', type=int, help='number of results to return')
 
@@ -66,7 +70,7 @@ def run():
   colorvote = Colorvote(config)
 
   if parsed.cmd == 'create':
-    colorvote.create(parsed.address, parsed.meta)
+    colorvote.create(parsed.address, parsed.unit, parsed.meta)
 
   elif parsed.cmd == 'scan':
     colorvote.scan()
