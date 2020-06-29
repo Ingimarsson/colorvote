@@ -15,12 +15,9 @@ class RPC(object):
     :param host: Host for RPC interface, default is localhost
     :type host: str, optional
     """
-    self.config = config
-
     self.session = requests.Session()
     self.headers = {'content-type': 'text/plain'}
-    self.url = "http://{}:{}@localhost:{}".format(self.config['username'], 
-      self.config['password'], self.config['port'])
+    self.url = "http://{}:{}@{}:{}".format(username, password, host, port)
 
   def execute(self, cmd, params = []):
     """Send a command to the wallet.
@@ -65,9 +62,9 @@ class RPC(object):
     :rtype: str
     """
 
-    tx = self.rpc.execute("createrawtransaction", params)
-    signed = self.rpc.execute("signrawtransaction", [tx])
-    txid = self.rpc.execute("sendrawtransaction", [signed['hex']])
+    tx = self.execute("createrawtransaction", params)
+    signed = self.execute("signrawtransaction", [tx])
+    txid = self.execute("sendrawtransaction", [signed['hex']])
  
     return txid
 

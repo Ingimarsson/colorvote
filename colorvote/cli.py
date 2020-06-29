@@ -17,7 +17,7 @@ def run():
   parser.add_argument('--config', help='path to JSON config file')
   parser.add_argument('--nosend', action='store_true', 
     help='don\'t execute commands in wallet')
-  parser.add_argument('--print', action='store_true', 
+  parser.add_argument('--verbose', action='store_true', 
     help='print the JSON RPC wallet commands')
 
   parser_create = subparser.add_parser('create', help='create a new election')
@@ -29,8 +29,10 @@ def run():
 
   parser_issue = subparser.add_parser('issue', help='issue new votes')
   parser_issue.add_argument('election', help='address of election')
-  parser_issue.add_argument('receiver', help='address to receive votes')
-  parser_issue.add_argument('votes', type=int, help='number of votes to issue')
+  parser_issue.add_argument('addresses', 
+    help='JSON list of addresses to receive votes')
+  parser_issue.add_argument('amounts', 
+    help='JSON list of vote count to issue to each address')
 
   parser_send = subparser.add_parser('send', help='send a vote')
   parser_send.add_argument('election', help='address of election')
@@ -74,15 +76,30 @@ def run():
   except JSONDecodeError:
     sys.exit("Could not decode config JSON")
 
-  config['nosend'] = parsed.nosend
-  config['print'] = parsed.print
-
   if parsed.database : config['database'] = parsed.database
 
   colorvote = Colorvote(config)
 
   if parsed.cmd == 'create':
-    colorvote.create(parsed.address, parsed.unit, parsed.meta)
+    tx = colorvote.create_id_tx(parsed.address, parsed.unit, parsed.meta)
+
+    if parsed.verbose:
+      print(json.dumps(tx, indent=2))
+
+    if not parsed.nosend:
+      txid = colorvote.rpc.send_transaction(tx)
+      print(txid)
+
+  if parsed.cmd == 'issue':
+    tx = colorvote.create_issue_tx(
+      parsed.election, 
+      json.loads(parsed.addresses),
+      json.loads(parsed.amounts)
+    )
+
+    if parsed.verbose:
+      print(json.dumps(tx, indent=2))
+
 
   elif parsed.cmd == 'scan':
     colorvote.scan()

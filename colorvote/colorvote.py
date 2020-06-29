@@ -13,7 +13,8 @@ class Colorvote(object):
     self.config = config
 
     self.db = Database(config['database'])
-    self.rpc = RPC(config['rpc'])
+    self.rpc = RPC(config['rpc']['username'], config['rpc']['password'], \
+      port=config['rpc']['port'])
 
     self.txfee = 1.0
 
@@ -126,9 +127,10 @@ class Colorvote(object):
     election.
 
     To issue coins we need to own an address that has made an identification
-    transaction. The address is the color/ID of the election. This command look
+    transaction. The address is the color/ID of the election. This command looks
     up the identifiaction transaction to read the vote value (the amount of the
-    currency that is equal to one vote).
+    currency that is equal to one vote). Then finds an unspent output with
+    sufficient funds and sends them with an nSequence according to the protocol.
 
     :param election: Address of election
     :type election: str
@@ -144,19 +146,53 @@ class Colorvote(object):
 
     election_info = self.db.get_election(election)
 
+    if len(addresses) != len(amounts):
+      raise Exception("Address count doesn't match amounts count")
+
+    """
     if not election_info:
       raise Exception(
         "There is no election with this address, try rescanning the blockchain")
+    """
 
-    unit = election_info['unit']
+    #unit = election_info['unit']
+    unit=1
 
     vote_count = sum(amounts)
 
     # Search for an UTXO with enough funds
+    unspent = self.rpc.execute("listunspent")
+
+    utxo = None
+
+    for u in unspent:
+      if u['address'] == election and u['amount'] >= vote_count*unit+self.txfee:
+        utxo = u
+        break
+
+    if not utxo:
+      raise Exception(
+        "Could not find an unspent output to use, needs {} plus {} txfee" \
+          .format(vote_count*unit, self.txfee))
 
     # Create and send transaction 
+    inputs = [
+      {
+        'txid': utxo['txid'],
+        'vout': utxo['vout'],
+        'sequence': 178
+      }
+    ]
 
-    return
+    outputs = dict(zip(addresses, amounts))
+
+    change = utxo['amount'] - vote_count*unit - self.txfee
+
+    if change > 0:
+      outputs[election] = change
+
+    return [inputs, outputs]
+
 
   def create_transfer_tx(self, address, recepient, amount=1):
     """Creates a transfer transaction to send votes between addresses.
@@ -200,39 +236,18 @@ class Colorvote(object):
         if sequence != 4294967295 and sequence != 0:
           # Identification transaction
           if sequence % 256 == 177:
-            # Find the address that funded this transaction
-            prev_tx = self.rpc.get_transaction(transaction['vin'][0]['txid'])
+            decoded_tx = self.read_id_tx(transaction)
 
-            vout_n = transaction['vin'][0]['vout']
-            utxo = prev_tx['vout'][vout_n]
-
-            if len(transaction['vout']) < 2:
-              # init transactions always have two outputs
-              continue
-
-            op_return = transaction['vout'][1]['scriptPubKey']
-
-            if op_return['type'] != 'nulldata':
-              # second output should be OP_RETURN data
-              continue
-
-            election_meta = bytearray.fromhex(op_return['hex'][4:]).decode()
-            election_address = utxo['scriptPubKey']['addresses']
-            election_unit = self.decode_vote_value(floor(sequence/256) % 256)
-
-            if election_unit == 0:
+            if decoded_tx[1] == 0:
               # Vote unit should be nonzero
               continue
 
-            if self.db.get_election(election_address):
+            if self.db.get_election(decoded_tx[0]):
               # This address is already an election address
               continue
 
-            self.db.insert_election(election_address, election_unit, \
-              election_meta)
-
-            print("address: %s vote unit: %s metadata: %s" % \
-              (election_address, election_unit, election_metadata))
+            print(decoded_tx)
+            self.db.insert_election(*decoded_tx)
 
           # Issuance transaction
           if sequence % 256 == 178:
@@ -247,6 +262,64 @@ class Colorvote(object):
 
     self.db.set_setting('height', blocks-1)
     return
+
+
+  def read_id_tx(self, transaction):
+    """Decode an identification transaction.
+
+    :param transaction: A transaction as returned by the \
+    ``decoderawtransaction`` wallet command
+    :type transaction: dict
+
+    :return: A tuple (address, unit, metadata)
+    :rtype: tuple
+    """
+    sequence = transaction['vin'][0]['sequence']
+
+    # Find the address that funded this transaction
+    prev_tx = self.rpc.get_transaction(transaction['vin'][0]['txid'])
+
+    vout_n = transaction['vin'][0]['vout']
+    utxo = prev_tx['vout'][vout_n]
+
+    if len(transaction['vout']) < 2:
+      # init transactions always have two outputs
+      return
+
+    op_return = transaction['vout'][1]['scriptPubKey']
+
+    if op_return['type'] != 'nulldata':
+      # second output should be OP_RETURN data
+      return
+
+    election_meta = bytearray.fromhex(op_return['hex'][4:]).decode()
+    election_address = utxo['scriptPubKey']['addresses'][0]
+    election_unit = self.decode_vote_value(floor(sequence/256) % 256)
+
+    return (election_address, election_unit, election_meta)
+
+
+  def read_issue_tx(self, transaction):
+    """Decode an issuing transaction.
+
+    :param transaction: A transaction as returned by the \
+    ``decoderawtransaction`` wallet command
+    :type transaction: dict
+
+    :return: A list of tuples (election, address, votes)
+    :rtype: list
+    """
+
+  def read_transfer_tx(self, transaction):
+    """Decode a transfer transaction.
+
+    :param transaction: A transaction as returned by the \
+    ``decoderawtransaction`` wallet command
+    :type transaction: dict
+
+    :return: A tuple (address, unit, metadata)
+    :rtype: tuple
+    """
 
   def get_unspent():
     """Returns a list of unspent outputs from the wallet that have voting coins.
@@ -275,4 +348,5 @@ class Colorvote(object):
     """Returns a commitment for the given message based on the key.
     """
     return
+
 
