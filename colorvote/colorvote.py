@@ -2,6 +2,7 @@ import json
 
 from .database import Database
 from .rpc import RPC
+from .models import Election, Transaction
 
 from math import log, floor
 
@@ -147,7 +148,7 @@ class Colorvote(object):
     election_info = self.db.get_election(election)
 
     if len(addresses) != len(amounts):
-      raise Exception("Address count doesn't match amounts count")
+      raise Exception("Number of addresses doesn't match number of amounts")
 
     """
     if not election_info:
@@ -155,8 +156,7 @@ class Colorvote(object):
         "There is no election with this address, try rescanning the blockchain")
     """
 
-    #unit = election_info['unit']
-    unit=1
+    unit = election_info.unit
 
     vote_count = sum(amounts)
 
@@ -194,9 +194,13 @@ class Colorvote(object):
     return [inputs, outputs]
 
 
-  def create_transfer_tx(self, address, recepient, amount=1):
+  def create_transfer_tx(self, election, address, recepient, amount=1):
     """Creates a transfer transaction to send votes between addresses.
 
+    NOTE: Currently does not support combining votes from multiple UTXOs.
+
+    :param election: The election ID to vote in
+    :type election: str
     :param address: Address that currently holds the votes in the wallet
     :type address: str
     :param recepient: Address of the recepient of the votes
@@ -207,7 +211,54 @@ class Colorvote(object):
     :return: Transaction ID returned by wallet
     :rtype: str
     """
-    return
+
+    # First step is to find wallet UTXOs associated with this election
+    unspent = self.db.get_unspent(election, address)
+    print("Found {} unspent outputs for this address".format(len(unspent)))
+
+    vote_unit = self.db.get_election(election).unit
+
+    vote_utxo = None
+
+    for u in unspent:
+      if u['amount'] <= amount*vote_unit:
+        vote_utxo = u
+
+    if not vote_utxo:
+      raise Exception("This address doesn't hold sufficient votes")
+
+    # Find an input to use for fees
+    unspent = self.rpc.execute("listunspent")
+
+    fee_utxo = None
+
+    for u in unspent:
+      if u['address'] != address and u['amount'] >= self.txfee:
+        fee_utxo = u
+        break
+
+    if not fee_utxo:
+      raise Exception("Can't find an additional UTXO to add fees")
+
+    inputs = [
+      {
+        'txid': vote_utxo['txid'],
+        'vout': vote_utxo['vout'],
+        'sequence': 179
+      },
+      {
+        'txid': fee_utxo['txid'],
+        'vout': fee_utxo['vout'],
+      }
+    ]
+
+    outputs = {
+      recepient: amount*vote_unit,
+      address: vote_utxo['amount']-amount*vote_unit,
+      fee_utxo['address']: fee_utxo['amount'] - self.txffee
+    }
+
+    return [inputs, outputs]
 
   def scan(self):
     """Iterates through the blockchain and finds colorvote transactions.
@@ -233,38 +284,45 @@ class Colorvote(object):
         # The sequence tag should always be in the first input
         sequence = transaction['vin'][0]['sequence']
 
-        if sequence != 4294967295 and sequence != 0:
-          # Identification transaction
-          if sequence % 256 == 177:
-            decoded_tx = self.read_id_tx(transaction)
+        if sequence == 4294967295 or sequence == 0:
+          continue
 
-            if decoded_tx[1] == 0:
-              # Vote unit should be nonzero
+        # Identification transaction
+        if sequence % 256 == 177:
+          id_tx = self.read_id_tx(block, transaction)
+
+          if id_tx.unit == 0:
+            # Vote unit should be nonzero
+            continue
+
+          if self.db.get_election(id_tx.address):
+            # This address is already an election address
+            continue
+
+          print(id_tx)
+          self.db.insert_election(id_tx)
+
+        # Issuance transaction
+        if sequence % 256 == 178:
+          outs = self.read_issue_tx(block, transaction)
+
+          for out in outs:
+            if self.db.get_transaction(out.txid, out.n):
               continue
 
-            if self.db.get_election(decoded_tx[0]):
-              # This address is already an election address
-              continue
+            print(out)
+            self.db.insert_transaction(out)
 
-            print(decoded_tx)
-            self.db.insert_election(*decoded_tx)
-
-          # Issuance transaction
-          if sequence % 256 == 178:
-            print("Found issuance transaction")
-
-          # Transfer transaction
-          if sequence % 256 == 179:
-            print("Found transfer transaction")
-
-          print(i, tx, sequence)
+        # Transfer transaction
+        if sequence % 256 == 179:
+          print("Found transfer transaction")
 
 
     self.db.set_setting('height', blocks-1)
     return
 
 
-  def read_id_tx(self, transaction):
+  def read_id_tx(self, block, transaction):
     """Decode an identification transaction.
 
     :param transaction: A transaction as returned by the \
@@ -296,22 +354,78 @@ class Colorvote(object):
     election_address = utxo['scriptPubKey']['addresses'][0]
     election_unit = self.decode_vote_value(floor(sequence/256) % 256)
 
-    return (election_address, election_unit, election_meta)
+    return Election(
+      time=block['time'],
+      block=block['height'],
+      txid=transaction['txid'],
+      address=election_address, 
+      unit=election_unit, 
+      metadata=election_meta
+    )
 
 
-  def read_issue_tx(self, transaction):
+  def read_issue_tx(self, block, transaction):
     """Decode an issuing transaction.
+
+    Currently the colorvote module only supports one input for issuing
+    transactions although the protocol is more general (need to fix)
 
     :param transaction: A transaction as returned by the \
     ``decoderawtransaction`` wallet command
     :type transaction: dict
 
-    :return: A list of tuples (election, address, votes)
+    :return: A list of tuples (election, address, txid, n, votes)
     :rtype: list
     """
 
+    # Find the address that funded this transaction
+    prev_tx = self.rpc.get_transaction(transaction['vin'][0]['txid'])
+
+    vout_n = transaction['vin'][0]['vout']
+    utxo = prev_tx['vout'][vout_n]
+
+    election_address = utxo['scriptPubKey']['addresses'][0]
+
+    election_info = self.db.get_election(election_address)
+
+    if not election_info:
+      # Not a valid election
+      # return None
+      print('ok')
+
+    outputs = []
+
+    # Put all vote outputs in list while not exceeding input amount
+    for output in transaction['vout']:
+      if output['scriptPubKey']['type'] == 'pubkeyhash':
+        address = output['scriptPubKey']['addresses'][0]
+        # Issuer can't issue votes to himself
+        if address != election_address:
+          outputs.append(Transaction(
+            time=block['time'],
+            block=block['height'],
+            election=election_address,
+            txtype='issue',
+            address=address, 
+            txid=transaction['txid'],
+            n=output['n'],
+            input_txid=None,
+            input_vout=None,
+            amount=output['value']
+          ))
+
+      if sum([out.amount for out in outputs]) > utxo['value']:
+        outputs.pop()
+        break
+
+    return outputs
+
+
   def read_transfer_tx(self, transaction):
     """Decode a transfer transaction.
+
+    Currently the colorvote module only supports one input for transfer
+    transactions although the protocol is more general (need to fix)
 
     :param transaction: A transaction as returned by the \
     ``decoderawtransaction`` wallet command
@@ -321,9 +435,11 @@ class Colorvote(object):
     :rtype: tuple
     """
 
+
   def get_unspent():
     """Returns a list of unspent outputs from the wallet that have voting coins.
     """
+
     return
 
   def get_elections():

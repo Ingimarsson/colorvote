@@ -100,6 +100,10 @@ def run():
     if parsed.verbose:
       print(json.dumps(tx, indent=2))
 
+    if not parsed.nosend:
+      txid = colorvote.rpc.send_transaction(tx)
+      print(txid)
+
 
   elif parsed.cmd == 'scan':
     colorvote.scan()

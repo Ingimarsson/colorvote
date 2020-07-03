@@ -28,6 +28,7 @@ class Database(object):
     
     return c.fetchone()[0]
 
+
   def set_setting(self, key, value):
     """Write a setting value to the database.
 
@@ -43,15 +44,58 @@ class Database(object):
 
     return
 
+
   def get_election(self, address):
     """Get an election from the database.
     """
-    return
+    c = self.conn.cursor()
 
-  def insert_election(self, address, unit, metadata):
+    c.execute("SELECT * FROM election WHERE address=?",
+      (address, ))
+    
+    result = c.fetchone()
+
+    if not result:
+      return None
+
+    return Election(
+      time=result['time'], 
+      block=result['block'],
+      txid=result['txid'],
+      address=result['address'],
+      unit=result['unit'],
+      metadata=result['metadata']
+    )
+
+
+  def insert_election(self, election):
     """Write an election to the database.
     """
-    return
+    c = self.conn.cursor()
+
+    c.execute("INSERT INTO election VALUES(?,?,?,?,?,?)", election)
+
+    self.conn.commit()
+
+
+  def get_transaction(self, txid, n):
+    """Get a transaction from the database.
+    """
+    c = self.conn.cursor()
+
+    c.execute("SELECT * FROM txout WHERE txid=? AND n=?", (txid, n))
+
+    return c.fetchone()
+
+
+  def insert_transaction(self, transaction):
+    """Insert a transaction into the database.
+    """
+    c = self.conn.cursor()
+
+    c.execute("INSERT INTO txout VALUES(?,?,?,?,?,?,?,?,?,?)", transaction)
+
+    self.conn.commit()
 
   def get_commitment(self, address):
     """Get a commitment for given address from the database.
@@ -62,3 +106,4 @@ class Database(object):
     """Write a commitment value for given address to the database.
     """
     return
+
