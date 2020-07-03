@@ -213,7 +213,7 @@ class Colorvote(object):
     """
 
     # First step is to find wallet UTXOs associated with this election
-    unspent = self.db.get_unspent(election, address)
+    unspent = self.db.get_unspent(address)
     print("Found {} unspent outputs for this address".format(len(unspent)))
 
     vote_unit = self.db.get_election(election).unit
@@ -221,7 +221,7 @@ class Colorvote(object):
     vote_utxo = None
 
     for u in unspent:
-      if u['amount'] <= amount*vote_unit:
+      if u['amount'] >= amount*vote_unit:
         vote_utxo = u
 
     if not vote_utxo:
@@ -243,7 +243,7 @@ class Colorvote(object):
     inputs = [
       {
         'txid': vote_utxo['txid'],
-        'vout': vote_utxo['vout'],
+        'vout': vote_utxo['n'],
         'sequence': 179
       },
       {
@@ -252,13 +252,19 @@ class Colorvote(object):
       }
     ]
 
-    outputs = {
-      recepient: amount*vote_unit,
-      address: vote_utxo['amount']-amount*vote_unit,
-      fee_utxo['address']: fee_utxo['amount'] - self.txffee
-    }
+    outputs = dict()
+
+    outputs[recepient] = amount*vote_unit
+
+    # If not all votes are used then send remaining back
+    if outputs[recepient] < vote_utxo['amount']:
+      outputs[address] = vote_utxo['amount']-outputs[recepient]
+
+    if fee_utxo['amount'] > self.txfee:
+      outputs[fee_utxo['address']] = fee_utxo['amount'] - self.txfee
 
     return [inputs, outputs]
+
 
   def scan(self):
     """Iterates through the blockchain and finds colorvote transactions.
@@ -269,7 +275,7 @@ class Colorvote(object):
 
     print("Starting scan at block %s, blockchain height %s" % (height, blocks))
 
-    for i in range(height, blocks):
+    for i in range(height, blocks+1):
       block_hash = self.rpc.execute("getblockhash", [i])
       block = self.rpc.execute("getblock", [block_hash])
 
@@ -316,9 +322,17 @@ class Colorvote(object):
         # Transfer transaction
         if sequence % 256 == 179:
           print("Found transfer transaction")
+          outs = self.read_transfer_tx(block, transaction)
+
+          for out in outs:
+            if self.db.get_transaction(out.txid, out.n):
+              continue
+
+            print(out)
+            self.db.insert_transaction(out)
 
 
-    self.db.set_setting('height', blocks-1)
+    self.db.set_setting('height', blocks)
     return
 
 
@@ -421,7 +435,7 @@ class Colorvote(object):
     return outputs
 
 
-  def read_transfer_tx(self, transaction):
+  def read_transfer_tx(self, block, transaction):
     """Decode a transfer transaction.
 
     Currently the colorvote module only supports one input for transfer
@@ -434,6 +448,54 @@ class Colorvote(object):
     :return: A tuple (address, unit, metadata)
     :rtype: tuple
     """
+ 
+    # Find the address that funded this transaction
+    txid = transaction['vin'][0]['txid']
+    n = transaction['vin'][0]['vout']
+
+    prev_tx = self.db.get_transaction(txid, n)
+
+    election_info = self.db.get_election(prev_tx['election'])
+
+    if not election_info:
+      # Not a valid election
+      # return None
+      print('ok')
+
+    outputs = []
+
+    # Put all vote outputs in list while not exceeding input amount
+    for output in transaction['vout']:
+      if output['scriptPubKey']['type'] == 'pubkeyhash':
+        address = output['scriptPubKey']['addresses'][0]
+        outputs.append(Transaction(
+          time=block['time'],
+          block=block['height'],
+          election=prev_tx['election'],
+          txtype='transfer',
+          address=address, 
+          txid=transaction['txid'],
+          n=output['n'],
+          input_txid=prev_tx['txid'],
+          input_vout=prev_tx['n'],
+          amount=output['value']
+        ))
+
+      if sum([out.amount for out in outputs]) > prev_tx['amount']:
+        outputs.pop()
+        break
+
+    return outputs
+
+
+  def is_db_synced(self):
+    """Returns whether the database is up to date with latest blocks.
+    """
+    height = int(self.db.get_setting('height'))
+
+    blocks = self.rpc.execute('getinfo')['blocks']
+
+    return blocks == height
 
 
   def get_unspent():

@@ -1,5 +1,7 @@
 import sqlite3
 
+from .models import Election, Transaction
+
 class Database(object):
   """This is a database wrapper to use with the library.
   """
@@ -9,6 +11,8 @@ class Database(object):
     :type db: str, optional
     """
     self.conn = sqlite3.connect(db)
+
+    self.conn.row_factory = sqlite3.Row
 
     return
 
@@ -96,6 +100,29 @@ class Database(object):
     c.execute("INSERT INTO txout VALUES(?,?,?,?,?,?,?,?,?,?)", transaction)
 
     self.conn.commit()
+
+
+  def get_unspent(self, address):
+    """Get unspent transaction of address from the database.
+    """
+    c = self.conn.cursor()
+
+    query = """
+      SELECT * 
+      FROM txout t
+      WHERE address=? 
+      AND NOT EXISTS(
+        SELECT * 
+        FROM txout
+        WHERE input_txid=t.txid
+        AND input_vout = t.n
+      )
+    """
+
+    c.execute(query, (address, ))
+
+    return c.fetchall()
+
 
   def get_commitment(self, address):
     """Get a commitment for given address from the database.

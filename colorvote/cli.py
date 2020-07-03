@@ -36,7 +36,9 @@ def run():
 
   parser_send = subparser.add_parser('send', help='send a vote')
   parser_send.add_argument('election', help='address of election')
-  parser_send.add_argument('candidate', help='address of candidate')
+  parser_send.add_argument('address', help='address that holds the vote')
+  parser_send.add_argument('recepient', help='address of candidate')
+  parser_send.add_argument('amount', type=int, help='number of votes')
 
   parser_balance = subparser.add_parser('balance', 
     help='get unspent voting coins in wallet (or by address)')
@@ -80,6 +82,13 @@ def run():
 
   colorvote = Colorvote(config)
 
+  # Check if database is synced for relevant commands
+  if parsed.cmd in ['create', 'issue', 'send']:
+    if not colorvote.is_db_synced():
+      print("Database is not in sync, run colorvote.py scan first")
+
+      return
+
   if parsed.cmd == 'create':
     tx = colorvote.create_id_tx(parsed.address, parsed.unit, parsed.meta)
 
@@ -90,11 +99,26 @@ def run():
       txid = colorvote.rpc.send_transaction(tx)
       print(txid)
 
-  if parsed.cmd == 'issue':
+  elif parsed.cmd == 'issue':
     tx = colorvote.create_issue_tx(
       parsed.election, 
       json.loads(parsed.addresses),
       json.loads(parsed.amounts)
+    )
+
+    if parsed.verbose:
+      print(json.dumps(tx, indent=2))
+
+    if not parsed.nosend:
+      txid = colorvote.rpc.send_transaction(tx)
+      print(txid)
+
+  elif parsed.cmd == 'send':
+    tx = colorvote.create_transfer_tx(
+      parsed.election,
+      parsed.address,
+      parsed.recepient,
+      parsed.amount
     )
 
     if parsed.verbose:
