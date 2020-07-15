@@ -1,4 +1,7 @@
+import atexit
+
 from flask import Flask, jsonify
+from apscheduler.schedulers.background import BackgroundScheduler
 
 from colorvote import Colorvote
 
@@ -12,6 +15,17 @@ config = {
   },
   'database': '../database.db'
 }
+
+def scan_blockchain():
+  colorvote = Colorvote(config)
+
+  colorvote.scan()
+
+scheduler = BackgroundScheduler()
+scheduler.add_job(func=scan_blockchain, trigger='interval', minutes=1)
+scheduler.start()
+
+atexit.register(lambda: scheduler.shutdown())
 
 @app.route('/elections')
 def elections():
