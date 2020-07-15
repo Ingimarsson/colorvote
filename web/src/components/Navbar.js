@@ -14,7 +14,7 @@ const Menu = styled.div`
 const Item = styled.div`
   display: inline-block;
   margin: 15px 20px;
-  font-size: 18px;
+  font-size: 16px;
   color: #fff;
 `
 
@@ -31,16 +31,17 @@ const TitleItem = styled(Item)`
 
 const InfoItem = styled(Item)`
   background-color: #ffffff44;
-  font-size: 14px;
+  font-size: 12px;
   float: right;
   padding: 4px 8px;
   border-radius: 4px;
   margin-top: 12px;
+  margin-right: 0px;
 `
 
 const ColorLine = styled.div`
   width: 100%;
-  height: 7px;
+  height: 4px;
   background: linear-gradient(to right, 
      #f94144 15%, #f3722c 15% 30%, #f8961e 30% 45%, #f9c74f 45% 60%, 
      #90be6d 60% 75%, #43aa8b 75% 90%, #577590 90% 100%);

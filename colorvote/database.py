@@ -49,6 +49,25 @@ class Database(object):
     return
 
 
+  def get_elections(self):
+    """Get all elections from the database.
+    """
+    c = self.conn.cursor()
+
+    c.execute("SELECT * FROM election")
+    
+    results = c.fetchall()
+
+    return [Election(
+      time=result['time'], 
+      block=result['block'],
+      txid=result['txid'],
+      address=result['address'],
+      unit=result['unit'],
+      metadata=result['metadata']
+    ) for result in results]
+
+
   def get_election(self, address):
     """Get an election from the database.
     """
@@ -102,6 +121,21 @@ class Database(object):
     self.conn.commit()
 
 
+  def get_transactions(self):
+    """Get all transactions from database
+    """
+    c = self.conn.cursor()
+
+    query = """
+      SELECT * 
+      FROM txout t
+    """
+
+    c.execute(query)
+
+    return c.fetchall()
+
+
   def get_unspent(self, address):
     """Get unspent transaction of address from the database.
     """
@@ -120,6 +154,29 @@ class Database(object):
     """
 
     c.execute(query, (address, ))
+
+    return c.fetchall()
+
+
+  def get_results(self, election):
+    """Get unspent transaction of address from the database.
+    """
+    c = self.conn.cursor()
+
+    query = """
+      SELECT address, sum(amount) as votes
+      FROM txout t
+      WHERE election=? 
+      AND NOT EXISTS(
+        SELECT * 
+        FROM txout
+        WHERE input_txid=t.txid
+        AND input_vout = t.n
+      )
+      GROUP BY address
+    """
+
+    c.execute(query, (election, ))
 
     return c.fetchall()
 
