@@ -10,7 +10,7 @@ app = Flask(__name__)
 config = {
   'rpc': {
     'username': 'smileycoinrpc',
-    'password': '2nhUgEm7up4Usici957BqNPZWoXfeJfBtJUZwH1UXBTc',
+    'password': 'Ee2bApUqyMCCcgAvG159CJqkS4rKs9aDTWAkZaEgb6NV',
     'port': 14242
   },
   'database': '../database.db'
