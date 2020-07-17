@@ -8,12 +8,16 @@ const Menu = styled.div`
   width: 100%;
   background-color: #577590;
   color: #fff;
-  margin-bottom: 20px;
+`
+
+const Dropdown = styled(Menu)`
+  height: 200px;
+  background-color: #6989a5;
 `
 
 const Item = styled.div`
   display: inline-block;
-  margin: 15px 20px;
+  padding: 15px 20px;
   font-size: 16px;
   color: #fff;
 `
@@ -23,6 +27,10 @@ const MenuItem = styled(Item)`
     cursor: pointer;
     color: #ddd;
   }
+`
+
+const RightMenuItem = styled(MenuItem)`
+  float: right;
 `
 
 const TitleItem = styled(Item)`
@@ -35,8 +43,15 @@ const InfoItem = styled(Item)`
   float: right;
   padding: 4px 8px;
   border-radius: 4px;
-  margin-top: 12px;
-  margin-right: 0px;
+  margin: 12px 6px;
+`
+
+const MobileInfoItem = styled(InfoItem)`
+
+`
+
+const MobileMenuItem = styled(MenuItem)`
+  display: block;
 `
 
 const ColorLine = styled.div`
@@ -48,20 +63,84 @@ const ColorLine = styled.div`
 `
 
 class Navbar extends Component {
+  constructor(props) {
+    super(props);
+
+    this.intervalID = 0;
+
+    this.state = {
+      peers: 0,
+      height: 0,
+      isMobile: false,
+      dropdown: false
+    }
+  }
+
+  toggleDropdown = () => this.setState({dropdown: !this.state.dropdown});
+  hideDropdown = () => this.setState({dropdown: false});
+
+  componentDidMount() {
+    this.loadData();
+
+    this.intervalID = setInterval(this.loadData.bind(this), 5000);
+
+    window.addEventListener("resize", this.resize.bind(this));
+    this.resize();
+  }
+
+  componentWillUnmount() {
+    clearInterval(this.intervalID);
+
+    window.removeEventListener("resize", this.resize.bind(this));
+  }
+
+  resize() {
+    this.setState({isMobile: window.innerWidth <= 760});
+  }
+
+  loadData() {
+    let that = this;
+
+    fetch('/info')
+      .then(response => response.json())
+      .then(function(data) {
+        that.setState({
+          peers: data.connections, 
+          height: data.height
+        });
+      });
+  }
+
   render() {
     return (
-      <div>
+      <div style={{marginBottom: 20}}>
         <ColorLine/>
         <Menu>
           <Container>
             <TitleItem>Colorvote</TitleItem>
-            <MenuItem as={Link} to='/'>Elections</MenuItem>
-            <MenuItem as={Link} to='/transactions'>Transactions</MenuItem>
-            <MenuItem as={Link} to='/vote'>Vote</MenuItem>
-            <InfoItem>SMLY</InfoItem>
-            <InfoItem>Height 702441</InfoItem>
+            { !this.state.isMobile && [
+              <MenuItem as={Link} to='/'>Elections</MenuItem>,
+              <MenuItem as={Link} to='/transactions'>Transactions</MenuItem>,
+              <MenuItem as={Link} to='/vote'>Vote</MenuItem>,
+              <InfoItem>SMLY</InfoItem>,
+              <InfoItem>Height {this.state.height}</InfoItem>,
+              <InfoItem>Peers {this.state.peers}</InfoItem>
+            ] }
+            { this.state.isMobile &&
+              <RightMenuItem onClick={this.toggleDropdown}>Menu</RightMenuItem>
+            }
           </Container>
         </Menu>
+        { (this.state.isMobile && this.state.dropdown) &&
+          <Dropdown>
+            <MobileMenuItem as={Link} to='/' onClick={this.hideDropdown}>Elections</MobileMenuItem>
+            <MobileMenuItem as={Link} to='/transactions' onClick={this.hideDropdown}>Transactions</MobileMenuItem>
+            <MobileMenuItem as={Link} to='/vote' onClick={this.hideDropdown}>Vote</MobileMenuItem>
+            <MobileInfoItem>SMLY</MobileInfoItem>
+            <MobileInfoItem>Height {this.state.height}</MobileInfoItem>
+            <MobileInfoItem>Peers {this.state.peers}</MobileInfoItem>
+          </Dropdown>
+        }
       </div>
     );
   }
