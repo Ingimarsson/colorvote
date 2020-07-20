@@ -27,7 +27,7 @@ class TransactionsPage extends Component {
   loadData() {
     var that = this;
     
-    fetch('/transactions')
+    fetch('/api/transactions')
       .then(response => response.json())
       .then(function(data) {
         that.setState({
