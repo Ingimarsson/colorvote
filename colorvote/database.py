@@ -54,7 +54,7 @@ class Database(object):
     """
     c = self.conn.cursor()
 
-    c.execute("SELECT * FROM election")
+    c.execute("SELECT * FROM election ORDER BY time DESC")
     
     results = c.fetchall()
 
@@ -128,7 +128,8 @@ class Database(object):
 
     query = """
       SELECT * 
-      FROM txout t
+      FROM txout
+      ORDER BY time DESC
     """
 
     c.execute(query)

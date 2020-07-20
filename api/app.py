@@ -86,7 +86,8 @@ def transactions():
     'txid': t['txid'],
     'n': t['n'],
     'address': t['address'],
-    'amount': t['amount']
+    'amount': t['amount'],
+    'election': t['election']
   } for t in transactions])
 
 
@@ -116,7 +117,9 @@ def unspent(address):
     'time': t['time'],
     'block': t['block'],
     'election': t['election'],
-    'amount': t['amount']
+    'amount': t['amount'],
+    'txid': t['txid'],
+    'n': t['n']
   } for t in transactions])
 
 
