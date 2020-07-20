@@ -11,9 +11,10 @@ config = {
   'rpc': {
     'username': 'smileycoinrpc',
     'password': 'Ee2bApUqyMCCcgAvG159CJqkS4rKs9aDTWAkZaEgb6NV',
+    'host': 'wallet',
     'port': 14242
   },
-  'database': '../database.db'
+  'database': '/data/database.db'
 }
 
 def scan_blockchain():
