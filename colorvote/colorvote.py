@@ -15,7 +15,7 @@ class Colorvote(object):
 
     self.db = Database(config['database'])
     self.rpc = RPC(config['rpc']['username'], config['rpc']['password'], \
-      port=config['rpc']['port'])
+      port=config['rpc']['port'], host=config['rpc']['host'])
 
     self.txfee = 1.0
 
