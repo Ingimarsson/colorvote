@@ -60,3 +60,5 @@ html_static_path = ['_static']
 
 autoclass_content = 'both'
 
+master_doc = 'index'
+
