@@ -33,7 +33,7 @@ class VotePage extends Component {
   loadUnspent() {
     var that = this;
     
-    fetch('/unspent/'+this.state.address)
+    fetch('/api/unspent/'+this.state.address)
       .then(response => response.json())
       .then(function(data) {
         that.setState({

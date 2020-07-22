@@ -101,7 +101,7 @@ class Navbar extends Component {
   loadData() {
     let that = this;
 
-    fetch('/info')
+    fetch('/api/info')
       .then(response => response.json())
       .then(function(data) {
         that.setState({

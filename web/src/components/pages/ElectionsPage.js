@@ -28,7 +28,7 @@ class ElectionsPage extends Component {
   loadData() {
     var that = this;
     
-    fetch('/elections')
+    fetch('/api/elections')
       .then(response => response.json())
       .then(function(data) {
         that.setState({

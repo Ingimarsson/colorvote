@@ -33,7 +33,7 @@ class ElectionPage extends Component {
   loadData() {
     var that = this;
     
-    fetch('/elections/'+this.props.match.params.address)
+    fetch('/api/elections/'+this.props.match.params.address)
       .then(response => response.json())
       .then(function(data) {
         that.setState({
@@ -46,7 +46,7 @@ class ElectionPage extends Component {
         });
       });
  
-    fetch('/elections/'+this.props.match.params.address+'/results')
+    fetch('/api/elections/'+this.props.match.params.address+'/results')
       .then(response => response.json())
       .then(function(data) {
         that.setState({
