@@ -1,27 +1,42 @@
-Colorvote Documentation
+
+=======================
+Colorvote
 =======================
 
-Welcome to the colorvote documentation page!
+Colorvote is a colored coins protocol for voting on the Bitcoin (and compatible
+altcoin) blockchain. It is a modified version of the EPOBC colored coin protocol
+and uses the nSequence field to mark transactions. The protocol requires no
+changes to the blockchain (i.e. soft forks) and has minimal overhead as votes
+are transferred with normal P2PKH transactions.
 
-Installation
-============
+This project consists of a specification of the voting protocol, a web server to
+explore elections on the blockchain, and a python module that can build voting
+transactions and talk to a wallet over JSON-RPC.
 
-Example usage
-=============
+Links
+=====
 
-Functions and classes
-=====================
+- Source code: https://github.com/Ingimarsson/colorvote
+- Documentation: https://colorvote.readthedocs.io
+- PyPI package: https://pypi.org/project/colorvote/
 
-.. autoclass:: colorvote.Colorvote
-    :members:
+Getting Started
+===============
 
-.. autoclass:: colorvote.RPC
-    :members:
+The python package can be installed from PyPI.
 
-.. autoclass:: colorvote.Database
-    :members:
+.. code-block:: bash
+
+   $ pip install colorvote
+
+Table of Contents
+=================
 
 .. toctree::
    :maxdepth: 2
-   :caption: Contents:
+   :name: mastertoc
 
+   cli
+   class
+   protocol
+   web
