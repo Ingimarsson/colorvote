@@ -1,0 +1,245 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<svg
+   xmlns:dc="http://purl.org/dc/elements/1.1/"
+   xmlns:cc="http://creativecommons.org/ns#"
+   xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+   xmlns:svg="http://www.w3.org/2000/svg"
+   xmlns="http://www.w3.org/2000/svg"
+   id="svg8"
+   version="1.1"
+   viewBox="0 0 112.21722 93.780167"
+   height="93.780167mm"
+   width="112.21722mm">
+  <defs
+     id="defs2" />
+  <metadata
+     id="metadata5">
+    <rdf:RDF>
+      <cc:Work
+         rdf:about="">
+        <dc:format>image/svg+xml</dc:format>
+        <dc:type
+           rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
+        <dc:title></dc:title>
+      </cc:Work>
+    </rdf:RDF>
+  </metadata>
+  <g
+     transform="translate(-23.738988,-35.938882)"
+     id="layer1">
+    <rect
+       style="fill:#9bc4e1;fill-opacity:1;stroke:#000000;stroke-width:0.40000001;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+       y="50.727356"
+       x="24.012695"
+       height="19.749475"
+       width="49.749477"
+       id="rect3713" />
+    <rect
+       style="fill:#e19b9b;fill-opacity:1;stroke:#000000;stroke-width:0.40000001;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+       y="70.47683"
+       x="24.012697"
+       height="19.749475"
+       width="49.749477"
+       id="rect3713-3" />
+    <rect
+       style="fill:none;stroke:#000000;stroke-width:0.40000001;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+       y="119.69586"
+       x="23.938988"
+       height="9.823185"
+       width="49.823185"
+       id="rect3713-6" />
+    <rect
+       style="fill:#e1e19b;fill-opacity:1;stroke:#000000;stroke-width:0.39901388;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+       y="90.226303"
+       x="23.938988"
+       height="29.469557"
+       width="49.823189"
+       id="rect3713-3-7" />
+    <rect
+       style="fill:#9bc4e1;fill-opacity:1;stroke:#000000;stroke-width:0.40000001;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+       y="50.727356"
+       x="85.933022"
+       height="9.823185"
+       width="49.823185"
+       id="rect3713-6-5" />
+    <rect
+       style="fill:none;stroke:#000000;stroke-width:0.40000001;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+       y="60.550541"
+       x="86.006721"
+       height="19.749475"
+       width="49.749477"
+       id="rect3713-3-3" />
+    <rect
+       style="fill:#e19b9b;fill-opacity:1;stroke:#000000;stroke-width:0.40000001;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+       y="80.300018"
+       x="85.933022"
+       height="9.823185"
+       width="49.823185"
+       id="rect3713-6-56" />
+    <rect
+       style="fill:#e1e19b;fill-opacity:1;stroke:#000000;stroke-width:0.40000001;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+       y="90.123199"
+       x="86.006721"
+       height="19.749475"
+       width="49.749477"
+       id="rect3713-3-2" />
+    <rect
+       style="fill:#e1e19b;fill-opacity:1;stroke:#000000;stroke-width:0.40000001;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+       y="109.87267"
+       x="85.933022"
+       height="9.823185"
+       width="49.823185"
+       id="rect3713-6-9" />
+    <text
+       id="text4648"
+       y="58.502403"
+       x="39.451199"
+       style="font-style:normal;font-weight:normal;font-size:10.58333302px;line-height:1.25;font-family:sans-serif;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.26458332"
+       xml:space="preserve"><tspan
+         style="font-size:5.29166651px;stroke-width:0.26458332"
+         y="58.502403"
+         x="39.451199"
+         id="tspan4646">2 SMLY</tspan></text>
+    <text
+       id="text4726"
+       y="41.358688"
+       x="37.384109"
+       style="font-style:normal;font-weight:normal;font-size:10.58333302px;line-height:1.25;font-family:sans-serif;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.26458332"
+       xml:space="preserve"><tspan
+         style="font-size:7.05555534px;stroke-width:0.26458332"
+         y="41.358688"
+         x="37.384109"
+         id="tspan4724">Inputs</tspan></text>
+    <text
+       id="text4730"
+       y="41.175426"
+       x="96.461159"
+       style="font-style:normal;font-weight:normal;font-size:10.58333302px;line-height:1.25;font-family:sans-serif;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.26458332"
+       xml:space="preserve"><tspan
+         style="font-size:7.05555534px;stroke-width:0.26458332"
+         y="41.175426"
+         x="96.461159"
+         id="tspan4728">Outputs</tspan></text>
+    <flowRoot
+       transform="scale(0.26458333)"
+       style="font-style:normal;font-weight:normal;font-size:40px;line-height:1.25;font-family:sans-serif;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none"
+       id="flowRoot4732"
+       xml:space="preserve"><flowRegion
+         id="flowRegion4734"><rect
+           y="209.64795"
+           x="0"
+           height="333.14969"
+           width="72.032364"
+           id="rect4736" /></flowRegion><flowPara
+         id="flowPara4738"></flowPara></flowRoot>    <text
+       id="text4742"
+       y="66.647934"
+       x="25.289249"
+       style="font-style:normal;font-weight:normal;font-size:10.58333302px;line-height:1.25;font-family:sans-serif;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.26458332"
+       xml:space="preserve"><tspan
+         style="font-size:4.23333311px;stroke-width:0.26458332"
+         y="66.647934"
+         x="25.289249"
+         id="tspan4740">nSequence[0] = 0xB3</tspan></text>
+    <text
+       id="text4648-9"
+       y="77.476234"
+       x="39.953865"
+       style="font-style:normal;font-weight:normal;font-size:10.58333302px;line-height:1.25;font-family:sans-serif;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.26458332"
+       xml:space="preserve"><tspan
+         style="font-size:5.29166651px;stroke-width:0.26458332"
+         y="77.476234"
+         x="39.953865"
+         id="tspan4646-22">2 SMLY</tspan></text>
+    <text
+       id="text4742-8"
+       y="85.621765"
+       x="25.791914"
+       style="font-style:normal;font-weight:normal;font-size:10.58333302px;line-height:1.25;font-family:sans-serif;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.26458332"
+       xml:space="preserve"><tspan
+         style="font-size:4.23333311px;stroke-width:0.26458332"
+         y="85.621765"
+         x="25.791914"
+         id="tspan4740-9">nSequence[0] = 0xB3</tspan></text>
+    <text
+       id="text4648-73"
+       y="102.03246"
+       x="39.587353"
+       style="font-style:normal;font-weight:normal;font-size:10.58333302px;line-height:1.25;font-family:sans-serif;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.26458332"
+       xml:space="preserve"><tspan
+         style="font-size:5.29166651px;stroke-width:0.26458332"
+         y="102.03246"
+         x="39.587353"
+         id="tspan4646-61">3 SMLY</tspan></text>
+    <text
+       id="text4742-2"
+       y="110.17799"
+       x="25.425404"
+       style="font-style:normal;font-weight:normal;font-size:10.58333302px;line-height:1.25;font-family:sans-serif;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.26458332"
+       xml:space="preserve"><tspan
+         style="font-size:4.23333311px;stroke-width:0.26458332"
+         y="110.17799"
+         x="25.425404"
+         id="tspan4740-93">nSequence[0] = 0xB3</tspan></text>
+    <text
+       id="text4648-73-1"
+       y="126.49274"
+       x="39.59568"
+       style="font-style:normal;font-weight:normal;font-size:10.58333302px;line-height:1.25;font-family:sans-serif;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.26458332"
+       xml:space="preserve"><tspan
+         style="font-size:5.29166651px;stroke-width:0.26458332"
+         y="126.49274"
+         x="39.59568"
+         id="tspan4646-61-9">1 SMLY</tspan></text>
+    <text
+       id="text4648-73-4"
+       y="57.212334"
+       x="101.62055"
+       style="font-style:normal;font-weight:normal;font-size:10.58333302px;line-height:1.25;font-family:sans-serif;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.26458332"
+       xml:space="preserve"><tspan
+         style="font-size:5.29166651px;stroke-width:0.26458332"
+         y="57.212334"
+         x="101.62055"
+         id="tspan4646-61-7">1 SMLY</tspan></text>
+    <text
+       id="text4648-73-8"
+       y="72.056023"
+       x="101.62054"
+       style="font-style:normal;font-weight:normal;font-size:10.58333302px;line-height:1.25;font-family:sans-serif;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.26458332"
+       xml:space="preserve"><tspan
+         style="font-size:5.29166651px;stroke-width:0.26458332"
+         y="72.056023"
+         x="101.62054"
+         id="tspan4646-61-4">2 SMLY</tspan></text>
+    <text
+       id="text4648-73-5"
+       y="87.082977"
+       x="101.8038"
+       style="font-style:normal;font-weight:normal;font-size:10.58333302px;line-height:1.25;font-family:sans-serif;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.26458332"
+       xml:space="preserve"><tspan
+         style="font-size:5.29166651px;stroke-width:0.26458332"
+         y="87.082977"
+         x="101.8038"
+         id="tspan4646-61-0">1 SMLY</tspan></text>
+    <text
+       id="text4648-73-3"
+       y="101.92666"
+       x="101.43729"
+       style="font-style:normal;font-weight:normal;font-size:10.58333302px;line-height:1.25;font-family:sans-serif;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.26458332"
+       xml:space="preserve"><tspan
+         style="font-size:5.29166651px;stroke-width:0.26458332"
+         y="101.92666"
+         x="101.43729"
+         id="tspan4646-61-6">2 SMLY</tspan></text>
+    <text
+       id="text4648-73-10"
+       y="116.58709"
+       x="101.62054"
+       style="font-style:normal;font-weight:normal;font-size:10.58333302px;line-height:1.25;font-family:sans-serif;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.26458332"
+       xml:space="preserve"><tspan
+         style="font-size:5.29166651px;stroke-width:0.26458332"
+         y="116.58709"
+         x="101.62054"
+         id="tspan4646-61-63">1 SMLY</tspan></text>
+  </g>
+</svg>
