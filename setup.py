@@ -1,11 +1,13 @@
 from setuptools import setup
 
+from colorvote import __version__
+
 with open('README.md', 'r') as fh:
   long_description = fh.read()
 
 setup(
   name='colorvote',
-  version='0.1',
+  version=__version__,
   description='A package for the colored coins voting protocol',
   url='http://github.com/Ingimarsson/colorvote',
   author='Brynjar Ingimarsson',

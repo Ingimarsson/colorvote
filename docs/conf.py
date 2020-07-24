@@ -23,8 +23,10 @@ project = 'colorvote'
 copyright = '2020, Brynjar Ingimarsson'
 author = 'Brynjar Ingimarsson'
 
-# The full version, including alpha/beta/rc tags
-release = '0.0.1'
+# The short X.Y version.
+version = colorvote.__version__
+# The full version, including alpha/beta/rc tags.
+release = colorvote.__version__
 
 
 # -- General configuration ---------------------------------------------------
