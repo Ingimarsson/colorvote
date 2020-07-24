@@ -20,15 +20,6 @@ Links
 - Documentation: https://colorvote.readthedocs.io
 - PyPI package: https://pypi.org/project/colorvote/
 
-Getting Started
-===============
-
-The python package can be installed from PyPI.
-
-.. code-block:: bash
-
-   $ pip install colorvote
-
 Table of Contents
 =================
 
@@ -36,7 +27,8 @@ Table of Contents
    :maxdepth: 2
    :name: mastertoc
 
-   cli
+
+   start
    class
    protocol
    web
