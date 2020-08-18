@@ -1,3 +1,5 @@
+.. _protocol:
+
 The Protocol
 ============
 

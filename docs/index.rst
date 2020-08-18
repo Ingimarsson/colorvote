@@ -10,8 +10,8 @@ Colorvote
 
 Colorvote is a colored coins protocol for voting on Bitcoin-based blockchains.
 Transactions are marked in a special way so that users can create elections,
-issue votes to voters, and transfer votes to candidates. The project is intended
-for research purposes and should not be used for serious elections.
+issue votes to voters, and transfer votes to candidates. The project is mostly
+intended for research purposes and is not recommended for serious elections.
 
 It is developed for use on the `SmileyCoin <https://smileyco.in/>`_ blockchain,
 but should work with all Bitcoin-based blockchains. The protocol uses the
@@ -19,16 +19,22 @@ but should work with all Bitcoin-based blockchains. The protocol uses the
 This approach requires no changes or soft forks to the blockchain, and has
 minimal space overhead.
 
-The project includes the following components
+The project includes the following components:
 
-   *   **Protocol**: A specification for a colored coins voting protocol.
+   *   **Protocol**: A specification for the voting protocol, which is based on
+       the concept of colored coins.
    *   **Python module**: A python module that contains a command line tool for
-       managing elections. It talks to a local wallet using RPC.
+       managing elections, by talking to a local wallet using RPC.
    *   **Web service**: A special blockchain explorer to view election
        information, including election results and history of vote issuance and
        transfers.  
    *   **Wallet**: A web-based SmileyCoin wallet (CoinSpace fork) that has been
        modified for voting, making the voting process more user friendly.
+
+For more information about the problems that colorvote is intended to solve,
+check out the :ref:`intro` page. To get started with the colorvote utility,
+creating elections and casting votes, check out the :ref:`start` page.
+
 
 Resources
 =========
