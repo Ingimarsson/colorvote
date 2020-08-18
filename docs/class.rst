@@ -1,5 +1,5 @@
 
-Functions and Classes
+Module Reference
 =====================
 
 Colorvote

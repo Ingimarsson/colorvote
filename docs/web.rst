@@ -1,5 +1,5 @@
-Web Server
-==========
+Web Service
+===========
 
 The web server is a useful tool for exploring elections on the blockchain. It
 shows all election transactions on the blockchain and vote counts for elections.
