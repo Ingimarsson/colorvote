@@ -11,7 +11,8 @@ Colorvote
 Colorvote is a colored coins protocol for voting on Bitcoin-based blockchains.
 Transactions are marked in a special way so that users can create elections,
 issue votes to voters, and transfer votes to candidates. The project is mostly
-intended for research purposes and is not recommended for serious elections.
+intended for research purposes and is currently not recommended for serious
+elections.
 
 It is developed for use on the `SmileyCoin <https://smileyco.in/>`_ blockchain,
 but should work with all Bitcoin-based blockchains. The protocol uses the
