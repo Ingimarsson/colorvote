@@ -1,10 +1,9 @@
 import json
+from math import log, floor
 
 from .database import Database
 from .rpc import RPC
 from .models import Election, Transaction
-
-from math import log, floor
 
 class Colorvote(object):
   """This is an interface class for the colorvote package.

@@ -6,8 +6,10 @@ from json.decoder import JSONDecodeError
 
 from .colorvote import Colorvote
 
-def run():
-  parser = argparse.ArgumentParser()
+def main():
+  parser = argparse.ArgumentParser(description='Colorvote CLI tool',
+      prog='colorvote')
+
   subparser = parser.add_subparsers(title='subcommands',
       description='list of valid subcommands',
       dest='cmd',
