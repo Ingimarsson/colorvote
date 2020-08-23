@@ -21,7 +21,7 @@ Electronic voting can be divided in two categories:
 
 Electronic voting machines have been used in many elections, but they face the
 same problems as before, and may introduce new ones. For example there have been
-issues with counting machines not counting correctly and voting machines that
+issues with counting machines not counting correctly, and voting machines that
 sometimes flip the vote.
 
 .. image:: https://media2.giphy.com/media/3orif1zS11iWKhUJpK/giphy.gif
