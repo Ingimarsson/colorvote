@@ -1,10 +1,15 @@
 import argparse
 import json
 import sys
+import os
 
 from json.decoder import JSONDecodeError
 
+from .config import read_config, exists_config, initialize_config
+
 from .colorvote import Colorvote
+
+DEFAULT_CONFIG_DIR = os.path.join(os.path.expanduser("~"), '.colorvote')
 
 def main():
   parser = argparse.ArgumentParser(description='Colorvote CLI tool',
@@ -15,11 +20,11 @@ def main():
       dest='cmd',
       required=True)
 
-  parser.add_argument('--database', help='path to SQLite database')
-  parser.add_argument('--config', help='path to JSON config file')
-  parser.add_argument('--nosend', action='store_true', 
+  parser.add_argument('-d', '--datadir', 
+    help='path to configuration and data directory')
+  parser.add_argument('-n', '--nosend', action='store_true', 
     help='don\'t execute commands in wallet')
-  parser.add_argument('--verbose', action='store_true', 
+  parser.add_argument('-v', '--verbose', action='store_true', 
     help='print the JSON RPC wallet commands')
 
   parser_create = subparser.add_parser('create', help='create a new election')
@@ -67,20 +72,21 @@ def main():
 
   parsed = parser.parse_args()
 
+  # check and load the config
+  config_dir = parsed.datadir if parsed.datadir else DEFAULT_CONFIG_DIR
 
-  config_path = parsed.config if parsed.config else 'config.json'
+  if exists_config(config_dir):
+    config = read_config(config_dir)
 
-  try:
-    with open(config_path) as config_file:
-      config = json.load(config_file)
+  else:
+    if input(("Could not find configuration. Would you like to initialize "
+    "it at %s (y/N)? ") % (config_dir)).lower() == 'y':
+      initialize_config(config_dir)
+      print("Configuration initialized.")
 
-  except EnvironmentError:
-    sys.exit("Could not read config file")
+    return
 
-  except JSONDecodeError:
-    sys.exit("Could not decode config JSON")
-
-  if parsed.database : config['database'] = parsed.database
+  config['database'] = os.path.join(config_dir, 'database.sqlite3')
 
   colorvote = Colorvote(config)
 

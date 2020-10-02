@@ -1,6 +1,7 @@
 import os
 import sys
 import shutil
+import configparser
 
 DEFAULT_CONFIG = os.path.join(sys.path[0], 'config', 'colorvote.conf')
 DEFAULT_DB = os.path.join(sys.path[0], 'config', 'database.sqlite3')
@@ -14,7 +15,16 @@ def read_config(path):
 
   config.read(os.path.join(path, 'colorvote.conf'))
 
-  return config
+  c = {
+    'rpc': {
+      'username': config['RPC']['Username'],
+      'password': config['RPC']['Password'],
+      'host': config['RPC']['Host'],
+      'port': config['RPC']['Port'],
+    },
+  }
+
+  return c
 
 
 def exists_config(path):
@@ -36,10 +46,9 @@ def initialize_config(path):
   Creates the specified directory and initializes (copies) default config files
   into it. If directory already exists then we raisaise an Exception.
   """
-  if not os.isdir(path):
-    raise Exception('initialize_config: path is not a directory')
 
-  os.mkdir(path)
+  if not os.path.isdir(path):
+    os.mkdir(path)
 
   shutil.copy2(DEFAULT_CONFIG, path)
   shutil.copy2(DEFAULT_DB, path)
